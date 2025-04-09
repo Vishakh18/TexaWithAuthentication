@@ -1,0 +1,1 @@
+This is an AI chat Assistant that helps in common queries and answer it relevently. Made using gemini Api and can now generate text only. The UI is minimilistic and easy to understand and use. This also has Login-Logout Functionality with password reset option. The User can also update the theme as required to light or dark mode.
