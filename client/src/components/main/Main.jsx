@@ -134,9 +134,9 @@ function Main() {
         } h-auto p-2 w-full fixed top-0 z-50`}
       >
         <p className=" flex font-semibold lg:text-2xl md:text-xl text-lg top-2 font-card bg-gradient-to-r from-pink-400 via-sky-800 to-blue-700 text-transparent bg-clip-text">
-          <span>
-            <img className="h-16 w-16 -mt-2" src={assets.logo}></img>
-          </span>
+          <div className={`${theme ? "bg-black" : ""} h-12 rounded-md`}>
+            <img className={`h-16 w-16 -mt-2`} src={assets.logo}></img>
+          </div>
           {""}- AI Text Generator{" "}
         </p>
         <div className="fixed  top-4 lg:right-32 md:right-32 right-20">
