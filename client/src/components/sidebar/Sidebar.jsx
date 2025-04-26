@@ -3,8 +3,13 @@ import { assets } from "../../assets/assets";
 import { AppContent } from "../../context/AppContent";
 import { IoMdMenu } from "react-icons/io";
 import { FaHistory } from "react-icons/fa";
+import { GiSoundWaves } from "react-icons/gi";
+
 function Sidebar() {
   const {
+    result,
+    setSpeak,
+    spk,
     theme,
     setdisplay,
     setrecents,
@@ -13,6 +18,27 @@ function Sidebar() {
     display_recents,
     setprompt,
   } = useContext(AppContent);
+
+  // const speakText = (text) => {
+  //   if ("speechSynthesis" in window) {
+  //     window.speechSynthesis.cancel(); // Stop previous
+  //     const utterance = new SpeechSynthesisUtterance(text);
+  //     utterance.rate = 1; // Adjust speed
+  //     utterance.pitch = 1; // Adjust tone
+  //     utterance.lang = "en-US"; // Language
+  //     window.speechSynthesis.speak(utterance);
+  //   } else {
+  //     console.warn("Text-to-Speech not supported in this browser.");
+  //   }
+  // };
+  // function stop() {
+  //   speechSynthesis.cancel();
+  // }
+  // if (spk === true) {
+  //   speakText(result);
+  // } else {
+  //   stop();
+  // }
 
   return (
     <div
@@ -45,6 +71,24 @@ function Sidebar() {
             onClick={() => setprompt(!new_prompt)}
           ></img>
           <p className={`${display ? "mt-2 " : "hidden"}`}>New Search</p>
+        </div>
+
+        <div
+          className={`${
+            theme ? "text-black" : "text-white"
+          } text-4xl fixed flex flex-col space-x-1.5 ml-1 cursor-pointer`}
+          onClick={() => setSpeak(!spk)}
+        >
+          <GiSoundWaves />
+          <p className={`${display ? "mt-2 " : "hidden"} text-sm`}>
+            Voice Output
+          </p>
+          {/* <button
+            className=" bg-slate-500 rounded-md text-[20px] p-1"
+            onClick={() => stop()}
+          >
+            stop
+          </button> */}
         </div>
       </div>
       <div

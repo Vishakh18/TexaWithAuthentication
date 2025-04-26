@@ -12,17 +12,20 @@ import GeminiChatDisplay from "./Code";
 function Main() {
   const [text, settext] = useState("");
   const [displayicon, setdisplayicon] = useState(false);
-  const [result, setresult] = useState();
   const [prompt, setprompt] = useState(false);
   const [wait, setwait] = useState(false);
   const [list, setlist] = useState([]);
   const nevigate = useNavigate();
   const {
     userData,
+    result,
+    setresult,
     backendurl,
     setUserData,
     setIsLoggedin,
     theme,
+    spk,
+    setSpeak,
     setTheme,
     display,
     new_prompt,
@@ -58,6 +61,7 @@ function Main() {
     }
   };
   const handlelisten = () => {
+    speechSynthesis.cancel();
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
@@ -111,7 +115,7 @@ function Main() {
       const result = run(txt);
       result
         .then((data) => {
-          setresult(data.replace(/\*\*/g, "<br>").replace(/\*/g, "<hr><samp>"));
+          setresult(data);
         })
         .catch(Error);
     }
@@ -193,13 +197,17 @@ function Main() {
         )}
 
         {result && !display_recents ? (
-          <div
-            className={`mt-20  pr-5 flex justify-items-center h-auto font-medium font-primary ${
-              theme ? "text-black" : "text-slate-100"
-            }`}
-          >
-            <GeminiChatDisplay response={result}></GeminiChatDisplay>
-          </div>
+          <>
+            {" "}
+            <div className="text-black">{list}</div>
+            <div
+              className={`mt-10 mb-8  pr-5 flex justify-items-center h-auto font-medium font-primary ${
+                theme ? "text-black" : "text-slate-100"
+              }`}
+            >
+              <GeminiChatDisplay response={result}></GeminiChatDisplay>
+            </div>
+          </>
         ) : (
           <>
             {wait && !display_recents ? (
@@ -213,7 +221,7 @@ function Main() {
             ) : (
               <>
                 {display_recents ? (
-                  <div className="mt-10  ">
+                  <div className="mt-20 ml-5 ">
                     <div
                       className={`bg-gradient-to-r ${
                         theme
@@ -442,7 +450,7 @@ function Main() {
             theme ? "text-black" : "text-white"
           }`}
         >
-          GetText may generate inaccurate text. Please Double check.
+          Texa may generate inaccurate text. Please Double check.
         </div>
       </div>
     </div>

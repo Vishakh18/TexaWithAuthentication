@@ -7,12 +7,38 @@ export const AppContextProvider = (props) => {
   const [display, setdisplay] = useState(false);
   const [new_prompt, setprompt] = useState("");
   const [display_recents, setrecents] = useState(false);
-
+  const [result, setresult] = useState();
+  const [spk, setSpeak] = useState(false);
   axios.defaults.withCredentials = true;
   const [theme, setTheme] = useState(false);
   const backendurl = import.meta.env.VITE_BACKEND_URL;
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(false);
+  const speakText = (text) => {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1; // Speed of speech
+    utterance.pitch = 1; // Pitch
+    synth.cancel(); // Stop any ongoing speech
+    synth.speak(utterance);
+  };
+
+  // Strip Markdown symbols for TTS
+  const stripMarkdown = (text) => {
+    return text
+      .replace(/```[\w-]*\n[\s\S]*?\n```/g, "") // remove code blocks
+      .replace(/[*_~`>#-]/g, "") // remove markdown symbols
+      .replace(/\n{2,}/g, ". ") // treat double newlines as sentence end
+      .replace(/\n/g, " ") // single newline to space
+      .replace(/\s+/g, " ") // remove extra spaces
+      .trim();
+  };
+  if (spk) {
+    const plainText = stripMarkdown(result);
+    speakText(plainText);
+  } else if (spk === false) {
+    speechSynthesis.cancel();
+  }
   const getAuthState = async () => {
     try {
       const { data } = await axios.get(backendurl + "/api/auth/is-auth");
@@ -38,6 +64,8 @@ export const AppContextProvider = (props) => {
 
   const value = {
     backendurl,
+    spk,
+    setSpeak,
     isLoggedin,
     setIsLoggedin,
     userData,
@@ -51,6 +79,8 @@ export const AppContextProvider = (props) => {
     setdisplay,
     setprompt,
     setrecents,
+    result,
+    setresult,
   };
 
   return (

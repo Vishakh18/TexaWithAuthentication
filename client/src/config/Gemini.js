@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
+import { marked } from "marked";
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API);
 
 const baseModelConfig = {
