@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { assets } from "../../assets/assets";
 import run from "../../config/Gemini";
-
+import { MdLanguage } from "react-icons/md";
 import { AppContent } from "../../context/AppContent";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -9,13 +9,26 @@ import { useNavigate } from "react-router-dom";
 import { FaMoon } from "react-icons/fa6";
 import { FaSun } from "react-icons/fa6";
 import GeminiChatDisplay from "./Code";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
+import Tooltip from "@mui/material/Tooltip";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { IoLanguage } from "react-icons/io5";
 function Main() {
+  useEffect(() => {
+    AOS.init();
+    AOS.refresh();
+  }, []);
   const [text, settext] = useState("");
+  const { t } = useTranslation();
+  const { i18n } = useTranslation();
   const [displayicon, setdisplayicon] = useState(false);
   const [prompt, setprompt] = useState(false);
   const [wait, setwait] = useState(false);
   const [list, setlist] = useState([]);
   const nevigate = useNavigate();
+
   const {
     userData,
     result,
@@ -24,14 +37,43 @@ function Main() {
     setUserData,
     setIsLoggedin,
     theme,
-    spk,
-    setSpeak,
     setTheme,
     display,
     new_prompt,
     display_recents,
     setrecents,
+    speakText,
   } = useContext(AppContent);
+
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  function handleLanguageChange(e) {
+    i18n.changeLanguage(e);
+
+    if (e === "hi" && text) {
+      setwait(!wait);
+    } else if (e === "es" && text) {
+      setwait(!wait);
+    } else if (e === "en" && text) {
+      setwait(!wait);
+      sendprompt(text);
+    }
+
+    setresult();
+  }
   const sendVerificationOtp = async () => {
     try {
       axios.defaults.withCredentials = true;
@@ -130,7 +172,7 @@ function Main() {
         display ? "md:ml-24" : ""
       } ${
         theme ? "bg-white" : "bg-gradient-to-br  from-slate-950 to-slate-900"
-      } `}
+      }  `}
     >
       <div
         className={`flex ${
@@ -143,29 +185,64 @@ function Main() {
           </div>
           {""}- AI Text Generator{" "}
         </p>
-        <div className="fixed  top-4 lg:right-32 md:right-32 right-20">
-          <button
-            onClick={() => {
-              setTheme(!theme);
-            }}
-            className="cursor-pointer"
-          >
-            {theme ? <FaMoon /> : <FaSun className="text-white"></FaSun>}
-          </button>
+        <div className="fixed  top-4 lg:right-28 md:right-28 right-20 space-x-5">
+          <div className="relative inline-block " ref={dropdownRef}>
+            <Tooltip title="Language" placement="bottom">
+              <IoLanguage
+                className={`text-2xl top-1 relative cursor-pointer hover:scale-110 duration-100 ${
+                  theme ? "" : "text-white"
+                }`}
+                onClick={() => setShowDropdown(!showDropdown)}
+              />
+            </Tooltip>
+            {showDropdown && (
+              <ul className="absolute top-full left-0 mt-2 w-28 text-white bg-gray-800 shadow-md z-10 rounded-lg transition-all duration-300">
+                <li
+                  onClick={() => handleLanguageChange("en")}
+                  className="py-2 px-2 hover:bg-gray-600 rounded-lg cursor-pointer"
+                >
+                  English
+                </li>
+                <li
+                  onClick={() => handleLanguageChange("hi")}
+                  className="px-2 py-2 hover:bg-gray-600 rounded-lg cursor-pointer"
+                >
+                  हिंदी
+                </li>
+                <li
+                  onClick={() => handleLanguageChange("es")}
+                  className="px-2 py-2 hover:bg-gray-600 rounded-lg cursor-pointer"
+                >
+                  Spanish
+                </li>
+              </ul>
+            )}
+          </div>
+
+          <Tooltip title="Theme" placement="bottom">
+            <button
+              onClick={() => {
+                setTheme(!theme);
+              }}
+              className="cursor-pointer"
+            >
+              {theme ? <FaMoon /> : <FaSun className="text-white"></FaSun>}
+            </button>
+          </Tooltip>
         </div>
-        <div className="w-8 h-8 top-2 right-8 text-white fixed group ">
+        <div className="w-8 h-8 top-5 right-8 text-white fixed group ">
           <img
             src={assets.user_icon}
             className="rounded-full w-24  top-2 right-4"
           ></img>
-          <div className="absolute hidden group-hover:block top-0 right-0 z-10 textblack  pt-10">
+          <div className="absolute hidden group-hover:block top-0 right-0 z-10 textblack  pt-10 cursor-pointer">
             <ul className="list-none m-0 p-2 bg-gray-800 text-sm rounded-md">
               {!userData.isAccountVerified && (
                 <li
                   className="py-1 px-2 hover:bg-gray-600 cursor-pointer"
                   onClick={sendVerificationOtp}
                 >
-                  Verify Email
+                  {t("verify_email")}
                 </li>
               )}
 
@@ -173,25 +250,27 @@ function Main() {
                 className="py-1 px-2 pr-10 hover:bg-gray-600 cursor-pointer"
                 onClick={logout}
               >
-                Logout
+                {t("logout")}
               </li>
             </ul>
           </div>
         </div>
       </div>
 
-      <div className="main flex flex-col h-fit w-fit mr-2  ">
+      <div className="main flex flex-col h-fit w-fit mr-2  " data-aos="fade-up">
         {!result && !display_recents && (
-          <div className="lg:absolute  top-9 lg:top-20 md:top-20 ">
+          <div className="lg:absolute  top-9 lg:top-22 md:top-28 mt-20 lg:mt-0 ">
             <h1 className="text-4xl bg-gradient-to-tl from-pink-700 via-pink-400 to-blue-600  text-transparent bg-clip-text">
-              Hello,{userData.name ? userData.name : " User!"}
+              <span>{t("Hello")}</span>
+              <span>,</span>
+              {userData.name ? userData.name : " User!"}
             </h1>
             <h1
-              className={`md:text-6xl text-3xl ${
+              className={`md:text-6xl text-3xl mt-3 ${
                 theme ? "text-gray-800" : "text-white"
               }   bg-clip-text`}
             >
-              How can I help you?
+              {t("ask")}
             </h1>
           </div>
         )}
@@ -211,7 +290,7 @@ function Main() {
         ) : (
           <>
             {wait && !display_recents ? (
-              <div className="lg:mt-40 mt-12 w-96">
+              <div className="lg:mt-48 mt-12 w-96">
                 <div className="loading-bar flex h-32 gap-1 p-2 fade-in-25 md:gap-6 mt-10 "></div>
                 <div className="loading-bar w-5/6 flex h-32 gap-1 p-2 fade-in-25 md:gap-6 mt-2"></div>
                 <div className="loading-bar flex h-32  gap-1 p-2 fade-in-25 md:gap-6 mt-2"></div>
@@ -221,15 +300,15 @@ function Main() {
             ) : (
               <>
                 {display_recents ? (
-                  <div className="mt-20 ml-5 ">
+                  <div className="mt-24 ml-5 ">
                     <div
-                      className={`bg-gradient-to-r ${
+                      className={`bg-gradient-to-r mt-2 ${
                         theme
                           ? "from-gray-800 to-gray-400"
                           : "from-gray-300 to-white"
                       }  font-medium text-transparent bg-clip-text text-4xl`}
                     >
-                      Your Recents...
+                      {t("yourrecents")}
                     </div>
                     <div className={`${theme ? "text-black" : "text-white"} `}>
                       {list.length != 0 ? (
@@ -253,13 +332,13 @@ function Main() {
                         </ul>
                       ) : (
                         <div className="bg-gradient-to-tl from-pink-700 via-pink-400 to-blue-600  text-transparent bg-clip-text mt-10 text-2xl">
-                          No Recents
+                          {t("norecents")}
                         </div>
                       )}
                     </div>
                   </div>
                 ) : (
-                  <div className="grid md:grid-cols-3  grid-cols-1   mt-10 lg:mt-52 md:mt-20  gap-4  pr-5 md:place-content-start place-content-center font-medium">
+                  <div className="grid md:grid-cols-3  grid-cols-1 mt-14 lg:mt-56 md:mt-20  gap-4  pr-5 md:place-content-start place-content-center font-medium">
                     <div
                       className={`card1 ${
                         theme ? "bg-slate-100" : "bg-gray-200"
@@ -277,9 +356,7 @@ function Main() {
                           theme ? "text-black" : "text-slate-800"
                         } `}
                       >
-                        What is Generative AI? and how it works in backend to
-                        provide us the related solutions for the provided
-                        prompt?
+                        {t("prompt1")}
                       </div>
                       <div className="flex items-baseline">
                         <img
@@ -306,9 +383,7 @@ function Main() {
                           theme ? "text-black" : "text-slate-800"
                         } `}
                       >
-                        What are the other generative AI tools that i can use
-                        other than Gemini? How is Gemini better than those
-                        tools.
+                        {t("prompt2")}
                       </div>
                       <div className="flex items-baseline">
                         <img
@@ -335,9 +410,7 @@ function Main() {
                           theme ? "text-black" : "text-slate-800"
                         } `}
                       >
-                        Suggest different places to travel around the world! ,
-                        along with public reviews for the particular destination
-                        location.
+                        {t("prompt3")}
                       </div>
                       <div className="flex items-baseline">
                         <img
@@ -364,8 +437,7 @@ function Main() {
                           theme ? "text-black" : "text-slate-800"
                         } `}
                       >
-                        Explain the concept of Stack and Queue with their Time
-                        Complexity of these Data Structure.
+                        {t("prompt4")}
                       </div>
                       <div className="flex items-baseline">
                         <img
@@ -389,7 +461,13 @@ function Main() {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             setlist([...list, text]);
-            sendprompt(text);
+            sendprompt(
+              i18next.language === "hi"
+                ? text.concat(" respond in hindi")
+                : i18next.language === "es"
+                ? text.concat("response in spanish")
+                : text
+            );
           }
         }}
       >
@@ -402,7 +480,7 @@ function Main() {
             <input
               type="text"
               enterKeyHint="search"
-              placeholder="Ask Something!"
+              placeholder={t("placeholdertxt")}
               value={text}
               className={`bg-transparent text-black outline-none lg:w-[94%] w-[85%] `}
               onChange={handlechange}
@@ -450,7 +528,7 @@ function Main() {
             theme ? "text-black" : "text-white"
           }`}
         >
-          Texa may generate inaccurate text. Please Double check.
+          {t("disclaimer")}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 export const AppContent = createContext();
 import axios from "axios";
 export const AppContextProvider = (props) => {
+  const [language, setLanguage] = useState("en");
   const [display, setdisplay] = useState(false);
   const [new_prompt, setprompt] = useState("");
   const [display_recents, setrecents] = useState(false);
@@ -14,31 +15,45 @@ export const AppContextProvider = (props) => {
   const backendurl = import.meta.env.VITE_BACKEND_URL;
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(false);
-  const speakText = (text) => {
-    const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1; // Speed of speech
-    utterance.pitch = 1; // Pitch
-    synth.cancel(); // Stop any ongoing speech
-    synth.speak(utterance);
-  };
+  const [speakTxt, setSpeaktext] = useState();
+  // const speakText = (text, lang = "en-US") => {
+  //   const synth = window.speechSynthesis;
 
-  // Strip Markdown symbols for TTS
-  const stripMarkdown = (text) => {
-    return text
-      .replace(/```[\w-]*\n[\s\S]*?\n```/g, "") // remove code blocks
-      .replace(/[*_~`>#-]/g, "") // remove markdown symbols
-      .replace(/\n{2,}/g, ". ") // treat double newlines as sentence end
-      .replace(/\n/g, " ") // single newline to space
-      .replace(/\s+/g, " ") // remove extra spaces
-      .trim();
-  };
-  if (spk) {
-    const plainText = stripMarkdown(result);
-    speakText(plainText);
-  } else if (spk === false) {
-    speechSynthesis.cancel();
-  }
+  //   const speak = () => {
+  //     const voices = synth.getVoices();
+
+  //     // Try to find a matching voice for the language
+  //     const matchedVoice = voices.find((voice) => voice.lang.startsWith(lang));
+
+  //     const utterance = new SpeechSynthesisUtterance(text);
+  //     utterance.lang = lang;
+  //     utterance.rate = 1.1;
+  //     utterance.pitch = 1;
+
+  //     if (matchedVoice) {
+  //       utterance.voice = matchedVoice;
+  //       console.log(
+  //         "Using voice:",
+  //         matchedVoice.name,
+  //         "| LocalService:",
+  //         matchedVoice.localService
+  //       );
+  //     } else {
+  //       console.warn("No matching voice found for", lang);
+  //     }
+
+  //     synth.cancel(); // cancel any ongoing speech
+  //     synth.speak(utterance);
+  //   };
+
+  //   // Make sure voices are loaded
+  //   if (synth.getVoices().length === 0) {
+  //     synth.onvoiceschanged = () => speak();
+  //   } else {
+  //     speak();
+  //   }
+  // };
+
   const getAuthState = async () => {
     try {
       const { data } = await axios.get(backendurl + "/api/auth/is-auth");
@@ -81,6 +96,9 @@ export const AppContextProvider = (props) => {
     setrecents,
     result,
     setresult,
+    language,
+    setLanguage,
+    speakTxt,
   };
 
   return (
