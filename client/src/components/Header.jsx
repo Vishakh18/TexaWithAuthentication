@@ -38,7 +38,7 @@ function Header() {
         class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-blue-600 to-purple-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-whitemt-3 cursor-pointer"
         onClick={() => {
           if (isLoggedin) {
-            nevigate("/get-text");
+            nevigate("/texa");
           } else {
             toast.error("Please Log-in");
           }

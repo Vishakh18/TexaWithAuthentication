@@ -342,22 +342,18 @@ function Main() {
                     <div
                       className={`card1 ${
                         theme ? "bg-slate-100" : "bg-gray-200"
-                      }  rounded-lg p-4 space-y-5`}
-                    >
-                      <div
-                        onClick={(e) => {
-                          settext();
-                          settext(e.target.innerHTML);
-                          setdisplayicon(!display);
+                      }  rounded-lg p-4 space-y-5 cursor-pointer hover:scale-102 transition-transform ease-in-out  duration-150 hover:cursor-pointer ${
+                        theme ? "text-black" : "text-slate-800"
+                      }`}
+                      onClick={(e) => {
+                        settext();
+                        settext(t("prompt1"));
+                        setdisplayicon(!display);
 
-                          sendprompt(e.target.innerHTML);
-                        }}
-                        className={`hover:cursor-pointer ${
-                          theme ? "text-black" : "text-slate-800"
-                        } `}
-                      >
-                        {t("prompt1")}
-                      </div>
+                        sendprompt(t("prompt1"));
+                      }}
+                    >
+                      {t("prompt1")}
                       <div className="flex items-baseline">
                         <img
                           src={assets.compass_icon}
@@ -368,81 +364,66 @@ function Main() {
                     <div
                       className={`card1 ${
                         theme ? "bg-slate-100" : "bg-gray-200"
-                      }  rounded-lg p-4 space-y-5`}
-                    >
-                      {" "}
-                      <div
-                        onClick={(e) => {
-                          settext();
-                          settext(e.target.innerHTML);
-                          setdisplayicon(!display);
+                      }  rounded-lg p-4 space-y-5 cursor-pointer hover:scale-102 ransition-transform ease-in-out  duration-150 hover:cursor-pointer ${
+                        theme ? "text-black" : "text-slate-800"
+                      }`}
+                      onClick={(e) => {
+                        settext();
+                        settext(t("prompt2"));
+                        setdisplayicon(!display);
 
-                          sendprompt(e.target.innerHTML);
-                        }}
-                        className={`hover:cursor-pointer ${
-                          theme ? "text-black" : "text-slate-800"
-                        } `}
-                      >
-                        {t("prompt2")}
-                      </div>
+                        sendprompt(t("prompt2"));
+                      }}
+                    >
+                      {t("prompt2")}
                       <div className="flex items-baseline">
                         <img
                           src={assets.bulb_icon}
-                          className="h-8 w-8 ml-auto "
+                          className="h-8 w-8 ml-auto mt-5 "
                         ></img>
                       </div>
                     </div>
                     <div
                       className={`card1 ${
                         theme ? "bg-slate-100" : "bg-gray-200"
-                      }  rounded-lg p-4 space-y-5`}
+                      }  rounded-lg p-4 space-y-5 cursor-pointer hover:scale-102 transform-content  duration-150 hover:cursor-pointer ${
+                        theme ? "text-black" : "text-slate-800"
+                      }`}
+                      onClick={(e) => {
+                        settext();
+                        settext(t("prompt3"));
+                        setdisplayicon(!display);
+
+                        sendprompt(t("prompt3"));
+                      }}
                     >
-                      {" "}
-                      <div
-                        onClick={(e) => {
-                          settext();
-                          settext(e.target.innerHTML);
-                          setdisplayicon(!display);
-                          setlist([...list, e.target.innerHTML]);
-                          sendprompt(e.target.innerHTML);
-                        }}
-                        className={`hover:cursor-pointer ${
-                          theme ? "text-black" : "text-slate-800"
-                        } `}
-                      >
-                        {t("prompt3")}
-                      </div>
+                      {t("prompt3")}
                       <div className="flex items-baseline">
                         <img
-                          src={assets.message_icon}
-                          className="h-8 w-8 ml-auto "
+                          src={assets.question_icon}
+                          className="h-8 w-8 ml-auto mt-5 "
                         ></img>
                       </div>
                     </div>
                     <div
                       className={`card1 ${
                         theme ? "bg-slate-100" : "bg-gray-200"
-                      }  rounded-lg p-4 space-y-5`}
+                      }  rounded-lg p-4 space-y-5 cursor-pointer hover:scale-102 ransition-transform ease-in-out  duration-150 hover:cursor-pointer ${
+                        theme ? "text-black" : "text-slate-800"
+                      }`}
+                      onClick={(e) => {
+                        settext();
+                        settext(t("prompt4"));
+                        setdisplayicon(!display);
+
+                        sendprompt(t("prompt4"));
+                      }}
                     >
-                      {" "}
-                      <div
-                        onClick={(e) => {
-                          settext();
-                          settext(e.target.innerHTML);
-                          setdisplayicon(!display);
-                          setlist([...list, e.target.innerHTML]);
-                          sendprompt(e.target.innerHTML);
-                        }}
-                        className={`hover:cursor-pointer ${
-                          theme ? "text-black" : "text-slate-800"
-                        } `}
-                      >
-                        {t("prompt4")}
-                      </div>
+                      {t("prompt4")}
                       <div className="flex items-baseline">
                         <img
                           src={assets.code_icon}
-                          className="h-8 w-8 ml-auto "
+                          className="h-8 w-8 ml-auto mt-5 "
                         ></img>
                       </div>
                     </div>

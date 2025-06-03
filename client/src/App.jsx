@@ -24,7 +24,7 @@ function App() {
           path="/reset-password"
           element={<ResetPassword></ResetPassword>}
         />
-        <Route path="/get-text" element={<Combo></Combo>} />
+        <Route path="/texa" element={<Combo></Combo>} />
       </Routes>
     </div>
   );
