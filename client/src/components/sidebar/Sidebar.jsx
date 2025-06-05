@@ -22,7 +22,8 @@ function Sidebar() {
     language,
   } = useContext(AppContent);
 
-  const API_KEY = import.meta.env.ELEVENLABS_API_KEY;
+  const API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY;
+
   const VOICE_IDS = {
     hi: "DQuoFsZ3oda1diTerwpq",
     en: "ecp3DWciuUyW7BYM7II1",
@@ -57,12 +58,12 @@ function Sidebar() {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        console.error(
+        toast.warn(
           `ElevenLabs API error: ${response.status} - ${response.statusText}`,
           errorBody
         );
 
-        alert(
+        toast.warn(
           `Error synthesizing speech: ${response.status} - ${response.statusText}`
         );
         return;
@@ -137,13 +138,6 @@ function Sidebar() {
             onClick={() => speakWithElevenLabs(result, API_KEY, VOICE_IDS)}
           >
             <GiSoundWaves className="p-1" />
-
-            {/* <button
-            className=" bg-slate-500 rounded-md text-[20px] p-1"
-            onClick={() => stop()}
-          >
-            stop
-          </button> */}
           </div>
         </Tooltip>
       </div>
